@@ -2,13 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io
 
-path = "Thy1-GCaMP6s-M5-K-airpuff-0707"
+import h5py
 
-data = scipy.io.loadmat('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\info.mat')  # 读取mat文件
+path = "Thy1-GCaMP6s-M5-K-airpuff-0707"
+data = scipy.io.loadmat('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\info.mat')
+#  h5py.File('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\info.mat',
+#                  'r')  # 读取mat文件
 strengthData = scipy.io.loadmat('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\strength.mat')
 fps = 25
-time_offset = float(data['sync1'][0][0]) - 261 / fps  # 4178 / fps
-proc = np.load(r'D:\mokoghost\video\test\Thy1-GCaMP6s-M5-K-airpuff-0707_proc.npy', allow_pickle=True).item()
+time_offset = float(data['sync1'][0][0]) - 261 / fps  # 4266 261 4178 / fps
+proc = np.load('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\Thy1-GCaMP6s-M5-K-airpuff-0707_proc.npy',
+               allow_pickle=True).item()
 pupilAreaSeries = proc['pupil'][0]['area_smooth']
 pupilComSeries = proc['pupil'][0]['com_smooth']
 blinkSeries = proc['blink'][0]
@@ -19,7 +23,7 @@ pupilYSeries = pupilYSeries[1:-1]
 pupilAreaSeries = pupilAreaSeries[1:-1]
 timeSeries = np.linspace(1, len(pupilXSeries), len(pupilXSeries)) / fps + time_offset
 strengthSeries = np.array(strengthData['puff_list'][0])
-airpuffSeries = np.squeeze(data['sync2'])[3:]
+airpuffSeries = np.squeeze(data['sync2'])[4:]
 counter = 0
 for x in airpuffSeries:
     if x > max(timeSeries):
@@ -35,6 +39,7 @@ pupilYAccumulate = np.zeros((750, 4))
 pupilAreaAccumulate = np.zeros((750, 4))
 motSVDAccumulate = np.zeros((750, motSVD.shape[1], 4))
 k = 0
+seperateNum = np.zeros((4,))
 for index in indexSeries:
     for num in range(750):
         if strengthSeries[k] == 70:
@@ -42,26 +47,30 @@ for index in indexSeries:
             pupilYAccumulate[num, 0] = pupilYAccumulate[num, 0] + pupilYSeries[index + num]
             pupilAreaAccumulate[num, 0] = pupilAreaAccumulate[num, 0] + pupilAreaSeries[index + num]
             motSVDAccumulate[num, :, 0] = motSVDAccumulate[num, :, 0] + motSVD[index + num, :]
+            seperateNum[0] = seperateNum[0] + 1
         elif strengthSeries[k] == 75:
             pupilXAccumulate[num, 1] = pupilXAccumulate[num, 1] + pupilXSeries[index + num]
             pupilYAccumulate[num, 1] = pupilYAccumulate[num, 1] + pupilYSeries[index + num]
             pupilAreaAccumulate[num, 1] = pupilAreaAccumulate[num, 1] + pupilAreaSeries[index + num]
             motSVDAccumulate[num, :, 1] = motSVDAccumulate[num, :, 1] + motSVD[index + num, :]
+            seperateNum[1] = seperateNum[1] + 1
         elif strengthSeries[k] == 80:
             pupilXAccumulate[num, 2] = pupilXAccumulate[num, 2] + pupilXSeries[index + num]
             pupilYAccumulate[num, 2] = pupilYAccumulate[num, 2] + pupilYSeries[index + num]
             pupilAreaAccumulate[num, 2] = pupilAreaAccumulate[num, 2] + pupilAreaSeries[index + num]
             motSVDAccumulate[num, :, 2] = motSVDAccumulate[num, :, 2] + motSVD[index + num, :]
+            seperateNum[2] = seperateNum[2] + 1
         elif strengthSeries[k] == 85:
             pupilXAccumulate[num, 3] = pupilXAccumulate[num, 3] + pupilXSeries[index + num]
             pupilYAccumulate[num, 3] = pupilYAccumulate[num, 3] + pupilYSeries[index + num]
             pupilAreaAccumulate[num, 3] = pupilAreaAccumulate[num, 3] + pupilAreaSeries[index + num]
             motSVDAccumulate[num, :, 3] = motSVDAccumulate[num, :, 3] + motSVD[index + num, :]
+            seperateNum[3] = seperateNum[3] + 1
     k = k + 1
 
-pupilAreaAccumulate = pupilAreaAccumulate / len(indexSeries)
-pupilXAccumulate = pupilXAccumulate / len(indexSeries)
-pupilYAccumulate = pupilYAccumulate / len(indexSeries)
+pupilAreaAccumulate = pupilAreaAccumulate / seperateNum
+pupilXAccumulate = pupilXAccumulate / seperateNum
+pupilYAccumulate = pupilYAccumulate / seperateNum
 timespan = np.linspace(1, 30, 750)
 # timespan
 figure, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1,
@@ -90,15 +99,7 @@ ax4.plot(timespan, motSVDAccumulate[:, 2], c='#bbf90f', linestyle=':')
 ax4.plot(timespan, motSVDAccumulate[:, 3], c='#a2cffe', linestyle=':')
 ax4.set_title("小鼠面部动作SVD的变化")
 figure.legend(loc='upper left', frameon='True')
-# ax1.plot(timeSeries, pupilXSeries, c='blue')
-# for x in airpuffSeries:
-#     ax1.vlines(x, min(pupilXSeries), max(pupilXSeries), colors="c", linestyles="dashed")
-# ax2.plot(timeSeries, pupilYSeries, c='orange', linestyle=':')
-# for x in airpuffSeries:
-#     ax2.vlines(x, min(pupilYSeries), max(pupilYSeries), colors="c", linestyles="dashed")
-# ax3.plot(timeSeries, pupilAreaSeries, c='r', linestyle=':')
-# for x in airpuffSeries:
-#     ax3.vlines(x, min(pupilAreaSeries), max(pupilAreaSeries), colors="c", linestyles="dashed")
 
 figure.subplots_adjust(hspace=0.3)
+plt.savefig('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\' + path + '.jpg', dpi=600)
 plt.show()

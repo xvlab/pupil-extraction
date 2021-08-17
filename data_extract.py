@@ -1,13 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io
+import h5py
 
-path = "Thy1-GCaMP6s-M5-K-airpuff-0707"  # "thy1-gcamp6s-m2-0114-2(airpuff)"  #
-
-data = scipy.io.loadmat('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\info.mat')  # 读取mat文件
+path = "thy1-gcamp6s-m2-0114-2(airpuff)"
+data = scipy.io.loadmat('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\info.mat')
+# data = h5py.File('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\info.mat',
+#                  'r')  # 读取mat文件
 fps = 25
-time_offset = float(data['sync1'][0][0]) - 261 / fps  # 4178 / fps  #
-proc = np.load(r'D:\mokoghost\video\test\Thy1-GCaMP6s-M5-K-airpuff-0707_proc.npy', allow_pickle=True).item()
+time_offset = float(data['sync1'][0][0]) - 4178 / fps  # 261 4178 / fps
+proc = np.load('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\thy1-gcamp6s-m2-0114-2(airpuff).npy',
+               allow_pickle=True).item()
 pupilAreaSeries = proc['pupil'][0]['area_smooth']
 pupilComSeries = proc['pupil'][0]['com_smooth']
 blinkSeries = proc['blink'][0]
@@ -56,15 +59,7 @@ ax3.plot(timespan, pupilAreaAccumulate, c='#4b6113', linestyle=':')
 ax3.set_title("小鼠瞳孔面积的变化")
 ax4.plot(timespan, motSVDAccumulate[:, :], c='#01386a', linestyle=':')
 ax4.set_title("小鼠面部动作SVD的变化")
-# ax1.plot(timeSeries, pupilXSeries, c='blue')
-# for x in airpuffSeries:
-#     ax1.vlines(x, min(pupilXSeries), max(pupilXSeries), colors="c", linestyles="dashed")
-# ax2.plot(timeSeries, pupilYSeries, c='orange', linestyle=':')
-# for x in airpuffSeries:
-#     ax2.vlines(x, min(pupilYSeries), max(pupilYSeries), colors="c", linestyles="dashed")
-# ax3.plot(timeSeries, pupilAreaSeries, c='r', linestyle=':')
-# for x in airpuffSeries:
-#     ax3.vlines(x, min(pupilAreaSeries), max(pupilAreaSeries), colors="c", linestyles="dashed")
 
 figure.subplots_adjust(hspace=0.3)
+plt.savefig('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\' + path + '_uni.jpg', dpi=600)
 plt.show()

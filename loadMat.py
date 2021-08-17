@@ -12,4 +12,4 @@ print(data.keys())  # 查看mat文件中的所有变量
 print(strengthData['puff_list'][0])
 # offset = 682  # 在该帧之后开始记录FOV，也即sync1的第一个数据对应682帧
 
-strengthSeries=np.array(strengthData['puff_list'][0])
+strengthSeries = np.array(strengthData['puff_list'][0])

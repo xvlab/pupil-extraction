@@ -5,7 +5,7 @@ def nothing(emp):
     pass
 
 
-video = r'D:\mokoghost\pupil extraction\test.avi'
+video = r'\\192.168.3.146\public\临时文件\xpy\Thy1-GCaMP6s-M4-K-airpuff-0706\Thy1-GCaMP6s-M4-K-airpuff-0706_all.avi'
 cv2.namedWindow('video')
 cap = cv2.VideoCapture(video)
 frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
