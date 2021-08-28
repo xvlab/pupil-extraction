@@ -102,13 +102,16 @@ for index in indexSeries:
             motSVDAccumulate[num, :, 3] = motSVDAccumulate[num, :, 3] + motSVD[index + num, :]
         counterS[3] = counterS[3] + 1
     k = k + 1
-
-timespan = np.linspace(1, 30, 750)
-# timespan
-cmap = sns.cubehelix_palette(start=1.5, rot=3, gamma=0.8, as_cmap=True)
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 显示中文标签
-plt.rcParams['axes.unicode_minus'] = False
-figX70, axX70 = plt.subplots(1, 1, figsize=(8, 8), dpi=300)
-im = axX70.imshow(pupilX70Accumulate.reshape(pupilY70Accumulate.shape[1], pupilY70Accumulate.shape[0]))
-# plt.savefig('\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\' + path + '.jpg', dpi=600)
-plt.show()
+paths='\\\\192.168.3.146\\public\\临时文件\\xpy\\' + path + '\\'
+scipy.io.savemat(paths+'pupilX85Accumulate.mat', {'pupilX85Accumulate': pupilX85Accumulate})
+scipy.io.savemat(paths+'pupilY85Accumulate.mat', {'pupilY85Accumulate': pupilY85Accumulate})
+scipy.io.savemat(paths+'pupilArea85Accumulate.mat', {'pupilArea85Accumulate': pupilArea85Accumulate})
+scipy.io.savemat(paths+'pupilX80Accumulate.mat', {'pupilX80Accumulate': pupilX80Accumulate})
+scipy.io.savemat(paths+'pupilY80Accumulate.mat', {'pupilY80Accumulate': pupilY80Accumulate})
+scipy.io.savemat(paths+'pupilArea80Accumulate.mat', {'pupilArea80Accumulate': pupilArea80Accumulate})
+scipy.io.savemat(paths+'pupilX75Accumulate.mat', {'pupilX75Accumulate': pupilX75Accumulate})
+scipy.io.savemat(paths+'pupilY75Accumulate.mat', {'pupilY75Accumulate': pupilY75Accumulate})
+scipy.io.savemat(paths+'pupilArea75Accumulate.mat', {'pupilArea75Accumulate': pupilArea75Accumulate})
+scipy.io.savemat(paths+'pupilX70Accumulate.mat', {'pupilX70Accumulate': pupilX70Accumulate})
+scipy.io.savemat(paths+'pupilY70Accumulate.mat', {'pupilY70Accumulate': pupilY70Accumulate})
+scipy.io.savemat(paths+'pupilArea70Accumulate.mat', {'pupilArea70Accumulate': pupilArea70Accumulate})
